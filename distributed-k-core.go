@@ -12,7 +12,7 @@ import (
 
 type Node struct {
 	id              string
-	core            int
+	coreNumber      int
 	storedNeighborK map[string]int
 	status          string
 	selfChan        chan sendMsg
@@ -39,20 +39,20 @@ func receive(node *Node) {
 		for {
 			select {
 			case receivedMsg := <-node.selfChan:
-				if receivedMsg.core != node.storedNeighborK[receivedMsg.id] {
-					node.storedNeighborK[receivedMsg.id] = receivedMsg.core
-					fmt.Println("Node ", node.id, " with stored neighbor count", len(node.storedNeighborK), " and core number ", node.core, " received core number", receivedMsg.core, " from node ", receivedMsg.id)
+				if receivedMsg.coreNumber != node.storedNeighborK[receivedMsg.id] {
+					node.storedNeighborK[receivedMsg.id] = receivedMsg.coreNumber
+					fmt.Println("Node ", node.id, " with stored neighbor count", len(node.storedNeighborK), " and core number ", node.coreNumber, " received core number", receivedMsg.coreNumber, " from node ", receivedMsg.id)
 					node.status = "active"
 
-					if len(node.storedNeighborK) >= node.core {
-						fmt.Println("node ", node.id, " with stored neighbor count", len(node.storedNeighborK), " and core number ", node.core, "received msg from ", receivedMsg.id, " with core number ", receivedMsg.core, " is calling updateCore method")
+					if len(node.storedNeighborK) >= node.coreNumber {
+						fmt.Println("node ", node.id, " with stored neighbor count", len(node.storedNeighborK), " and core number ", node.coreNumber, "received msg from ", receivedMsg.id, " with core number ", receivedMsg.coreNumber, " is calling updateCore method")
 						updateCore(node)
 						sendHeartBeat(node)
 						//fmt.Println("Node ", node.id, " is sending hb because of processing selfchan update message")
 					}
 				} else {
 					lenN := len(node.storedNeighborK)
-					fmt.Println("Node ", node.id, "with ", lenN, "neighbours Received duplicated core number", receivedMsg.core, " from node ", receivedMsg.id, " as node has stored ", node.storedNeighborK[receivedMsg.id])
+					fmt.Println("Node ", node.id, "with ", lenN, "neighbours Received duplicated core number", receivedMsg.coreNumber, " from node ", receivedMsg.id, " as node has stored ", node.storedNeighborK[receivedMsg.id])
 				}
 			//case <-heartbeatInterval:
 			//	if node.status == "active" {
@@ -61,7 +61,7 @@ func receive(node *Node) {
 			//		//fmt.Println("Node ", node.id, " is active, hb sent")
 			//	}
 			case <-node.terminationChan:
-				fmt.Println("node ", node.id, " has final core number ", node.core, " and status ", node.status)
+				fmt.Println("node ", node.id, " has final core number ", node.coreNumber, " and status ", node.status)
 				return
 			default:
 			}
@@ -70,33 +70,33 @@ func receive(node *Node) {
 }
 
 func send(node *Node, txt string) {
-	msg := sendMsg{node.id, node.core}
+	msg := sendMsg{node.id, node.coreNumber}
 	for _, c := range node.neighbors {
 		c <- msg
-		fmt.Println("Node ", node.id, " is sending core number", node.core, " to neighbour", c, " ", txt)
+		fmt.Println("Node ", node.id, " is sending core number", node.coreNumber, " to neighbour", c, " ", txt)
 	}
 }
 
 func updateCore(node *Node) {
-	origin_core := node.core
+	origin_core := node.coreNumber
 	for {
 		count := 0
 		for _, v := range node.storedNeighborK {
-			if v >= node.core {
+			if v >= node.coreNumber {
 				count++
 			}
 		}
-		if count >= node.core {
-			if node.core != origin_core {
+		if count >= node.coreNumber {
+			if node.coreNumber != origin_core {
 				go send(node, "updating")
 			}
 			node.status = "deactive"
-			//fmt.Println("node ", node.id, " with core number", node.core, " core is about to ", node.status)
+			//fmt.Println("node ", node.id, " with core number", node.coreNumber, " core is about to ", node.status)
 			return
 		} else {
-			//fmt.Println("node ", node.id, " with core number", node.core, " core is about to reduce 1 to ")
-			node.core--
-			//fmt.Println("node ", node.id, " core is reducing 1 to ", node.core)
+			//fmt.Println("node ", node.id, " with core number", node.coreNumber, " core is about to reduce 1 to ")
+			node.coreNumber--
+			//fmt.Println("node ", node.id, " core is reducing 1 to ", node.coreNumber)
 		}
 	}
 }
