@@ -70,6 +70,6 @@ func main() {
         return
     }
 
-    fmt.Println("Output has been written to output.json")
+    fmt.Println("Output has been written to output json file")
 }
 
