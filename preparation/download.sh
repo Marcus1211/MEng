@@ -25,6 +25,7 @@ mv ./twitch/PTBR/musae_PTBR_features.json ./
 unzip git_web_ml.zip
 mv ./git_web_ml/musae_git_features.json ./
 rm -rf twitch git_web_ml
+rm -rf *.zip
 
 ### remove all lines that start with '#' ###
 for FILE in ./*.txt; do

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"runtime"
 	"strconv"
 	"time"
 )
@@ -23,7 +22,7 @@ type Node struct {
 
 type sendMsg struct {
 	ID   string
-	core int
+	coreNumber int
 }
 
 func receive(node *Node) {
@@ -226,7 +225,7 @@ func main() {
 		var temp = map[string]int{}
 		newNode := Node{
 			ID:              k,
-			core:            len(v),
+			coreNumber:      len(v),
 			status:          "active",
 			storedNeighborK: temp,
 			selfChan:        channels[k],

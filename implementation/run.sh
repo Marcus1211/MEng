@@ -1,10 +1,7 @@
 #!/bin/bash
 
 # Folder containing the files
-FOLDER_PATH="./../preparation"
-
-# Go program to run
-GO_PROGRAM="./distributed-k-core.go"
+FOLDER_PATH="./../preparation/data_graph"
 
 # Check if the folder exists
 if [ ! -d "$FOLDER_PATH" ]; then
@@ -13,14 +10,15 @@ if [ ! -d "$FOLDER_PATH" ]; then
 fi
 
 # Loop through each file in the folder
-for FILE in "$FOLDER_PATH"/*; do
+for FILE in "$FOLDER_PATH"/*.json; do
   # Check if it is a file
   if [ -f "$FILE" ]; then
     # Run the Go program 20 times for each file
-    ABSOLUTE_PATH=$(realpath "$FOLDER_PATH/$FILE")
     for ((i=1; i<=20; i++)); do
-      OUTPUT_FILE="./$FILE_output_run_$i.txt"
-      $GO_PROGRAM "$ABSOLUTE_PATH" > "$OUTPUT_FILE"
+      SOURCE_FILE=$(echo $FILE | cut -d'/' -f 5)
+      echo $SOURCE_FILE
+      echo "run"
+      go run distributed-k-core.go $FILE > "${SOURCE_FILE}_output_run_${i}.txt"
     done
   fi
 done
