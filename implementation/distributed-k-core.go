@@ -183,7 +183,6 @@ func dataCleanse2(data map[string][]int) map[string][]int {
 }
 
 func main() {
-	runtime.GOMAXPROCS(10)
 	//filename := "/Users/runzezhao/workspace/MEng_project/lasftm_asia/super-simple.json"
 	//filename := "/Users/runzezhao/workspace/MEng_project/lasftm_asia/sample.json"
 	//filename := "/Users/runzezhao/workspace/MEng_project/lasftm_asia/test-data-clean-sample.json"
@@ -191,7 +190,7 @@ func main() {
 	//filename := "/Users/runzezhao/workspace/MEng_project/lasftm_asia/lastfm_asia_features.json"
 	//filename := "/Users/runzezhao/workspace/MEng_project/twitch/DE/musae_DE.json"
 	//filename := "/Users/runzezhao/workspace/MEng_project/twitch/PTBR/musae_PTBR_features.json"
-	filename := "/Users/runzezhao/workspace/MEng_project/MEng/git_web_ml/musae_git_features.json"
+	filename := os.Args[1]
 	fileContent, err := os.Open(filename)
 	if err != nil {
 		fmt.Println("Can't open file")
