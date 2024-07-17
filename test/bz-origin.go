@@ -90,9 +90,9 @@ func calculateCoreNumbers(graph Graph) map[string]int {
 		for node, degree := range degrees {
 			if degree < k {
 				delete(degrees, node)
-				for _, neighbor := range graph[node] {
-					if degrees[strconv.Itoa(neighbor)] > 0 {
-						degrees[strconv.Itoa(neighbor)]--
+				for _, neighbour := range graph[node] {
+					if degrees[strconv.Itoa(neighbour)] > 0 {
+						degrees[strconv.Itoa(neighbour)]--
 					}
 				}
 			}

@@ -12,12 +12,12 @@ import (
 type Node struct {
 	ID              string
 	coreNumber      int
-	storedNeighborK map[string]int
+	storedNeighbourK map[string]int
 	status          string
 	selfChan        chan sendMsg
 	serverChan      chan string
 	terminationChan chan bool
-	neighbors       []chan sendMsg
+	neighbours       []chan sendMsg
 }
 
 type sendMsg struct {
@@ -38,20 +38,20 @@ func receive(node *Node) {
 		for {
 			select {
 			case receivedMsg := <-node.selfChan:
-				if receivedMsg.coreNumber != node.storedNeighborK[receivedMsg.ID] {
-					node.storedNeighborK[receivedMsg.ID] = receivedMsg.coreNumber
-					fmt.Println("Node ", node.ID, " with stored neighbor count", len(node.storedNeighborK), " and core number ", node.coreNumber, " received core number", receivedMsg.coreNumber, " from node ", receivedMsg.ID)
+				if receivedMsg.coreNumber != node.storedNeighbourK[receivedMsg.ID] {
+					node.storedNeighbourK[receivedMsg.ID] = receivedMsg.coreNumber
+					fmt.Println("Node ", node.ID, " with stored neighbour count", len(node.storedNeighbourK), " and core number ", node.coreNumber, " received core number", receivedMsg.coreNumber, " from node ", receivedMsg.ID)
 					node.status = "active"
 
-					if len(node.storedNeighborK) >= node.coreNumber {
-						fmt.Println("node ", node.ID, " with stored neighbor count", len(node.storedNeighborK), " and core number ", node.coreNumber, "received msg from ", receivedMsg.ID, " with core number ", receivedMsg.coreNumber, " is calling updateCore method")
+					if len(node.storedNeighbourK) >= node.coreNumber {
+						fmt.Println("node ", node.ID, " with stored neighbour count", len(node.storedNeighbourK), " and core number ", node.coreNumber, "received msg from ", receivedMsg.ID, " with core number ", receivedMsg.coreNumber, " is calling updateCore method")
 						updateCore(node)
 						sendHeartBeat(node)
 						//fmt.Println("Node ", node.ID, " is sending hb because of processing selfchan update message")
 					}
 				} else {
-					lenN := len(node.storedNeighborK)
-					fmt.Println("Node ", node.ID, "with ", lenN, "neighbours Received duplicated core number", receivedMsg.coreNumber, " from node ", receivedMsg.ID, " as node has stored ", node.storedNeighborK[receivedMsg.ID])
+					lenN := len(node.storedNeighbourK)
+					fmt.Println("Node ", node.ID, "with ", lenN, "neighbours Received duplicated core number", receivedMsg.coreNumber, " from node ", receivedMsg.ID, " as node has stored ", node.storedNeighbourK[receivedMsg.ID])
 				}
 			//case <-heartbeatInterval:
 			//	if node.status == "active" {
@@ -70,7 +70,7 @@ func receive(node *Node) {
 
 func send(node *Node, txt string) {
 	msg := sendMsg{node.ID, node.coreNumber}
-	for _, c := range node.neighbors {
+	for _, c := range node.neighbours {
 		c <- msg
 		fmt.Println("Node ", node.ID, " is sending core number", node.coreNumber, " to neighbour", c, " ", txt)
 	}
@@ -80,7 +80,7 @@ func updateCore(node *Node) {
 	origin_core := node.coreNumber
 	for {
 		count := 0
-		for _, v := range node.storedNeighborK {
+		for _, v := range node.storedNeighbourK {
 			if v >= node.coreNumber {
 				count++
 			}
@@ -227,11 +227,11 @@ func main() {
 			ID:              k,
 			coreNumber:      len(v),
 			status:          "active",
-			storedNeighborK: temp,
+			storedNeighbourK: temp,
 			selfChan:        channels[k],
 			serverChan:      serverReceive,
 			terminationChan: terminationChannels[k],
-			neighbors:       channelMap[k],
+			neighbours:       channelMap[k],
 		}
 		nodes = append(nodes, newNode)
 	}
