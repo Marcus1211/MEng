@@ -26,13 +26,13 @@ type sendMsg struct {
 }
 
 func receive(node *Node) {
-	//heartbeatInterval := make(chan bool)
-	//go func() {
-	//	for {
-	//		time.Sleep(10 * time.Second)
-	//		heartbeatInterval <- true
-	//	}
-	//}()
+	heartbeatInterval := make(chan bool)
+	go func() {
+		for {
+			time.Sleep(10 * time.Second)
+			heartbeatInterval <- true
+		}
+	}()
 
 	go func() {
 		for {
@@ -53,12 +53,12 @@ func receive(node *Node) {
 					lenN := len(node.storedNeighbourK)
 					fmt.Println("Node ", node.ID, "with ", lenN, "neighbours Received duplicated core number", receivedMsg.coreNumber, " from node ", receivedMsg.ID, " as node has stored ", node.storedNeighbourK[receivedMsg.ID])
 				}
-			//case <-heartbeatInterval:
-			//	if node.status == "active" {
-			//		sendHeartBeat(node)
-			//		fmt.Println("Node ", node.ID, " is sending hb because of interval")
-			//		//fmt.Println("Node ", node.ID, " is active, hb sent")
-			//	}
+			case <-heartbeatInterval:
+				if node.status == "active" {
+					sendHeartBeat(node)
+					fmt.Println("Node ", node.ID, " is sending hb because of interval")
+					//fmt.Println("Node ", node.ID, " is active, hb sent")
+				}
 			case <-node.terminationChan:
 				fmt.Println("node ", node.ID, " has final core number ", node.coreNumber, " and status ", node.status)
 				return
@@ -111,7 +111,7 @@ func receiveHeartBeat(serverchan chan string, terminationChannels map[string]cha
 	receiveHB := 0
 	go func() {
 		for {
-			time.Sleep(120 * time.Second)
+			time.Sleep(300 * time.Second)
 			receiveInterval <- true
 		}
 	}()
