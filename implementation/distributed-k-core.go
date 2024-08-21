@@ -6,42 +6,44 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"sync"
 	"time"
 )
 
 type Node struct {
-	ID              string
-	coreNumber      int
+	ID               string
+	coreNumber       int
 	storedNeighbourK map[string]int
-	status          string
-	selfChan        chan sendMsg
-	serverChan      chan string
-	terminationChan chan bool
+	status           bool
+	selfChan         chan sendMsg
+	serverChan       chan bool
+	terminationChan  chan bool
 	neighbours       []chan sendMsg
 }
 
 type sendMsg struct {
-	ID   string
+	ID         string
 	coreNumber int
 }
 
-func receive(node *Node) {
-	heartbeatInterval := make(chan bool)
-	go func() {
-		for {
-			time.Sleep(10 * time.Second)
-			heartbeatInterval <- true
-		}
-	}()
+func receive(node *Node, wg *sync.WaitGroup) {
+	//heartbeatInterval := make(chan bool)
+	//go func() {
+	//	for {
+	//		time.Sleep(10 * time.Second)
+	//		heartbeatInterval <- true
+	//	}
+	//}()
 
 	go func() {
+		defer wg.Done()
 		for {
 			select {
 			case receivedMsg := <-node.selfChan:
 				if receivedMsg.coreNumber != node.storedNeighbourK[receivedMsg.ID] {
 					node.storedNeighbourK[receivedMsg.ID] = receivedMsg.coreNumber
 					fmt.Println("Node ", node.ID, " with stored neighbour count", len(node.storedNeighbourK), " and core number ", node.coreNumber, " received core number", receivedMsg.coreNumber, " from node ", receivedMsg.ID)
-					node.status = "active"
+					node.status = true
 
 					if len(node.storedNeighbourK) >= node.coreNumber {
 						fmt.Println("node ", node.ID, " with stored neighbour count", len(node.storedNeighbourK), " and core number ", node.coreNumber, "received msg from ", receivedMsg.ID, " with core number ", receivedMsg.coreNumber, " is calling updateCore method")
@@ -53,12 +55,12 @@ func receive(node *Node) {
 					lenN := len(node.storedNeighbourK)
 					fmt.Println("Node ", node.ID, "with ", lenN, "neighbours Received duplicated core number", receivedMsg.coreNumber, " from node ", receivedMsg.ID, " as node has stored ", node.storedNeighbourK[receivedMsg.ID])
 				}
-			case <-heartbeatInterval:
-				if node.status == "active" {
-					sendHeartBeat(node)
-					fmt.Println("Node ", node.ID, " is sending hb because of interval")
-					//fmt.Println("Node ", node.ID, " is active, hb sent")
-				}
+			//case <-heartbeatInterval:
+			//	if node.status == true {
+			//		sendHeartBeat(node)
+			//		fmt.Println("Node ", node.ID, " is sending hb because of interval")
+			//		//fmt.Println("Node ", node.ID, " is active, hb sent")
+			//	}
 			case <-node.terminationChan:
 				fmt.Println("node ", node.ID, " has final core number ", node.coreNumber, " and status ", node.status)
 				return
@@ -89,7 +91,7 @@ func updateCore(node *Node) {
 			if node.coreNumber != origin_core {
 				go send(node, "updating")
 			}
-			node.status = "deactive"
+			node.status = false
 			//fmt.Println("node ", node.ID, " with core number", node.coreNumber, " core is about to ", node.status)
 			return
 		} else {
@@ -105,7 +107,7 @@ func sendHeartBeat(node *Node) {
 	node.serverChan <- node.status
 }
 
-func receiveHeartBeat(serverchan chan string, terminationChannels map[string]chan bool) {
+func receiveHeartBeat(serverchan chan bool, terminationChannels map[string]chan bool) {
 	receiveInterval := make(chan bool)
 	receivedHeartBeat := false
 	receiveHB := 0
@@ -218,26 +220,28 @@ func main() {
 		}
 	}
 
-	serverReceive := make(chan string, 10000)
+	serverReceive := make(chan bool, 10000)
 
 	var nodes []Node
 	for k, v := range res {
 		var temp = map[string]int{}
 		newNode := Node{
-			ID:              k,
-			coreNumber:      len(v),
-			status:          "active",
+			ID:               k,
+			coreNumber:       len(v),
+			status:           true,
 			storedNeighbourK: temp,
-			selfChan:        channels[k],
-			serverChan:      serverReceive,
-			terminationChan: terminationChannels[k],
+			selfChan:         channels[k],
+			serverChan:       serverReceive,
+			terminationChan:  terminationChannels[k],
 			neighbours:       channelMap[k],
 		}
 		nodes = append(nodes, newNode)
 	}
 
+	var wg sync.WaitGroup
+	wg.Add(len(nodes))
 	for i := 0; i < len(nodes); i++ {
-		go receive(&nodes[i])
+		go receive(&nodes[i], &wg)
 	}
 	fmt.Println("All node started", len(nodes))
 
@@ -249,6 +253,5 @@ func main() {
 	}
 	fmt.Println("first send completed")
 
-	for true {
-	}
+	wg.Wait()
 }
