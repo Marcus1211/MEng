@@ -9,6 +9,10 @@ if [ ! -d "$FOLDER_PATH" ]; then
   exit 1
 fi
 
+echo "Note: This program runs against all test data graphs"
+echo "      This program runs each test data graph 20 times"
+echo "      To check the progress of each run, you can check the log output txt file in the same directory"
+
 # Loop through each file in the folder
 for FILE in "$FOLDER_PATH"/*.json; do
   # Check if it is a file
