@@ -11,7 +11,9 @@ fi
 
 echo "Note: This program runs against all test data graphs"
 echo "      This program runs each test data graph 20 times"
-echo "      To check the progress of each run, you can check the log output txt file in the same directory"
+echo "      To check the progress of each run, you can check the log output txt file"
+echo "      For large graphs contains over 200000 vertices, it may take hours to run the program"
+echo "      It is not recommened to run the entire experiment in the local laptop"
 
 # Loop through each file in the folder
 for FILE in "$FOLDER_PATH"/*.json; do
