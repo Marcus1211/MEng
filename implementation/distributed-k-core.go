@@ -50,7 +50,7 @@ func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartb
 		case <-selfTerminationChan:
 			active = false
 			fmt.Println("Node ", id, " has final core number of ", coreNumber)
-			return
+			break
 			//default:
 		}
 	}
