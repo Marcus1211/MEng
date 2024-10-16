@@ -15,7 +15,7 @@ type sendMsg struct {
 	coreNumber int
 }
 
-func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartbeat chan bool, terminationChan chan bool, wg *sync.WaitGroup) {
+func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartbeat chan bool, selfTerminationChan chan bool, wg *sync.WaitGroup) {
 	fmt.Println("Node ", id, " is starting")
 	defer wg.Done()
 	coreNumber := len(neighbourChan)
@@ -42,7 +42,7 @@ func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartb
 					}
 				}
 			}
-		case <-terminationChan:
+		case <-selfTerminationChan:
 			done = true
 			fmt.Println("Node ", id, " has final core number of ", coreNumber)
 			//default:
