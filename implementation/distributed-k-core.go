@@ -20,11 +20,11 @@ func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartb
 	defer wg.Done()
 	coreNumber := len(neighbourChan)
 	storedNeighbourK := map[string]int{}
-	done := false
+	active := true
 	//first send
 	go send(id, coreNumber, neighbourChan)
 
-	for !done {
+	for {
 		// node receives message from its own channel
 		select {
 		case receivedMsg := <-selfChan:
@@ -33,18 +33,24 @@ func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartb
 				storedNeighbourK[receivedMsg.ID] = receivedMsg.coreNumber
 				if len(storedNeighbourK) >= coreNumber {
 					//calculate k-core
+					active = true
+					if active {
+						fmt.Println("Node ", id, " status is active ", time.Now().Format("2006-01-02 15:04:05"))
+					}
 					new_core := updateCore(coreNumber, storedNeighbourK)
 					if new_core < coreNumber {
 						coreNumber = new_core
 						fmt.Println("Node ", id, " is updating its core number to ", coreNumber)
 						heartbeat <- true
 						go send(id, coreNumber, neighbourChan)
+						active = false
 					}
 				}
 			}
 		case <-selfTerminationChan:
-			done = true
+			active = false
 			fmt.Println("Node ", id, " has final core number of ", coreNumber)
+			return
 			//default:
 		}
 	}
@@ -72,6 +78,7 @@ func send(id string, coreNumber int, neighbourChan []chan sendMsg) {
 		//send messages to all neighbour nodes
 		c <- msg
 	}
+	fmt.Println("Node ", id, " sent ", len(neighbourChan), " messages ", time.Now().Format("2006-01-02 15:04:05"))
 }
 
 func watchdog(heartbeat chan bool, terminationChan map[string]chan bool) {
