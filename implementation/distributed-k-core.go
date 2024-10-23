@@ -22,7 +22,7 @@ func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartb
 	storedNeighbourK := map[string]int{}
 	active := true
 	//first send
-	go send(id, coreNumber, neighbourChan)
+	send(id, coreNumber, neighbourChan)
 
 	for {
 		// node receives message from its own channel
@@ -37,12 +37,12 @@ func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartb
 					if active {
 						fmt.Println("Node ", id, " status is active ", time.Now().Format("2006-01-02 15:04:05"))
 					}
+					//k-core calculation
 					new_core := updateCore(coreNumber, storedNeighbourK)
 					if new_core < coreNumber {
 						coreNumber = new_core
-						fmt.Println("Node ", id, " is updating its core number to ", coreNumber)
 						heartbeat <- true
-						go send(id, coreNumber, neighbourChan)
+						send(id, coreNumber, neighbourChan)
 						active = false
 					}
 				}
@@ -86,7 +86,6 @@ func watchdog(heartbeat chan bool, terminationChan map[string]chan bool) {
 	for !done {
 		select {
 		case <-heartbeat:
-			fmt.Println("received heartbeat")
 			done = false
 		//termination happens when no heartbeat receives in the past 300 seconds
 		case <-time.After(300 * time.Second):
@@ -162,11 +161,17 @@ func main() {
 
 	for k, v := range res {
 		//create synchronized channel for each node
-		allNodeChan[k] = make(chan sendMsg, len(v))
+		bufferSize := 0
+		for v := range v {
+			bufferSize = bufferSize + len(res[strconv.Itoa(v)])
+		}
+		allNodeChan[k] = make(chan sendMsg, bufferSize)
+		//allNodeChan[k] = make(chan sendMsg, 1635)
 		terminationChan[k] = make(chan bool)
 	}
 
 	neighbourChan := make(map[string][]chan sendMsg)
+
 	for k, v := range res {
 		for _, c := range v {
 			neighbourChan[k] = append(neighbourChan[k], allNodeChan[strconv.Itoa(c)])
