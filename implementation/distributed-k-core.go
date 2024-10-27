@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"strconv"
 	"sync"
@@ -16,7 +17,7 @@ type sendMsg struct {
 }
 
 func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartbeat chan bool, selfTerminationChan chan bool, wg *sync.WaitGroup) {
-	fmt.Println("Node ", id, " is starting")
+	//fmt.Println("Node ", id, " is starting")
 	defer wg.Done()
 	coreNumber := len(neighbourChan)
 	storedNeighbourK := map[string]int{}
@@ -35,7 +36,7 @@ func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartb
 					//calculate k-core
 					active = true
 					if active {
-						fmt.Println("Node ", id, " status is active ", time.Now().Format("2006-01-02 15:04:05"))
+						//log.Println("Node ", id, " status is active ", time.Now().Format("2006-01-02 15:04:05"))
 					}
 					//k-core calculation
 					new_core := updateCore(coreNumber, storedNeighbourK)
@@ -49,7 +50,7 @@ func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartb
 			}
 		case <-selfTerminationChan:
 			active = false
-			fmt.Println("Node ", id, " has final core number of ", coreNumber, " ", time.Now().Format("2006-01-02 15:04:05"))
+			log.Println("Node ", id, " has ", len(neighbourChan), " neighbours and final core number of ", coreNumber, " ", time.Now().Format("2006-01-02 15:04:05"))
 			return
 			//default:
 		}
@@ -78,7 +79,7 @@ func send(id string, coreNumber int, neighbourChan []chan sendMsg) {
 		//send messages to all neighbour nodes
 		c <- msg
 	}
-	fmt.Println("Node ", id, " sent ", len(neighbourChan), " messages ", time.Now().Format("2006-01-02 15:04:05"))
+	log.Println("Node ", id, " sent ", len(neighbourChan), " messages ", time.Now().Format("2006-01-02 15:04:05"))
 }
 
 func watchdog(heartbeat chan bool, terminationChan map[string]chan bool) {
@@ -165,8 +166,8 @@ func main() {
 		for v := range v {
 			bufferSize = bufferSize + len(res[strconv.Itoa(v)])
 		}
+		bufferSize = bufferSize + len(v)
 		allNodeChan[k] = make(chan sendMsg, bufferSize)
-		//allNodeChan[k] = make(chan sendMsg, 1635)
 		terminationChan[k] = make(chan bool)
 	}
 

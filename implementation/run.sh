@@ -24,7 +24,7 @@ for FILE in "$FOLDER_PATH"/*.json; do
       SOURCE_FILE=$(echo $FILE | cut -d'/' -f 5)
       echo $SOURCE_FILE
       echo "run"
-      go run distributed-k-core.go $FILE > "${SOURCE_FILE}_output_run_${i}.txt"
+      go run distributed-k-core.go $FILE > "${SOURCE_FILE}_output_run_${i}.txt" 2>&1
     done
   fi
 done
