@@ -16,20 +16,20 @@ type sendMsg struct {
 	coreNumber int
 }
 
-func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartbeat chan bool, selfTerminationChan chan bool, wg *sync.WaitGroup) {
+func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartbeat chan bool, selfTerminationChan chan bool, wg *sync.WaitGroup, enableLog string) {
 	//fmt.Println("Node ", id, " is starting")
 	defer wg.Done()
 	coreNumber := len(neighbourChan)
 	storedNeighbourK := map[string]int{}
 	active := true
 	//first send
-	send(id, coreNumber, neighbourChan)
+	send(id, coreNumber, neighbourChan, enableLog)
 
 	for {
 		// node receives message from its own channel
 		select {
 		case receivedMsg := <-selfChan:
-			if receivedMsg.coreNumber != storedNeighbourK[receivedMsg.ID] {
+			if receivedMsg.coreNumber < storedNeighbourK[receivedMsg.ID] || storedNeighbourK[receivedMsg.ID] == 0 {
 				//node stores neighbours core number
 				storedNeighbourK[receivedMsg.ID] = receivedMsg.coreNumber
 				if len(storedNeighbourK) >= coreNumber {
@@ -43,14 +43,14 @@ func node(id string, selfChan chan sendMsg, neighbourChan []chan sendMsg, heartb
 					if new_core < coreNumber {
 						coreNumber = new_core
 						heartbeat <- true
-						send(id, coreNumber, neighbourChan)
+						send(id, coreNumber, neighbourChan, enableLog)
 						active = false
 					}
 				}
 			}
 		case <-selfTerminationChan:
 			active = false
-			log.Println("Node ", id, " has ", len(neighbourChan), " neighbours and final core number of ", coreNumber, " ", time.Now().Format("2006-01-02 15:04:05"))
+			log.Println("Node ", id, " has ", len(neighbourChan), " neighbours and final core number of ", coreNumber)
 			return
 			//default:
 		}
@@ -73,13 +73,16 @@ func updateCore(coreNumber int, storedNeighbourK map[string]int) (k int) {
 	}
 }
 
-func send(id string, coreNumber int, neighbourChan []chan sendMsg) {
+func send(id string, coreNumber int, neighbourChan []chan sendMsg, enableLog string) {
 	msg := sendMsg{id, coreNumber}
 	for _, c := range neighbourChan {
 		//send messages to all neighbour nodes
 		c <- msg
 	}
-	log.Println("Node ", id, " sent ", len(neighbourChan), " messages ", time.Now().Format("2006-01-02 15:04:05"))
+	if enableLog == "enableLog" {
+		log.Println("Node ", id, " sent ", len(neighbourChan), " messages ")
+	}
+
 }
 
 func watchdog(heartbeat chan bool, terminationChan map[string]chan bool) {
@@ -149,6 +152,9 @@ func main() {
 		return
 	}
 
+	enableLog := os.Args[2]
+
+	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds)
 	byteResult, _ := io.ReadAll(fileContent)
 	var res map[string][]int
 	json.Unmarshal([]byte(byteResult), &res)
@@ -185,7 +191,7 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(len(res))
 	for k, _ := range res {
-		go node(k, allNodeChan[k], neighbourChan[k], heartbeat, terminationChan[k], &wg)
+		go node(k, allNodeChan[k], neighbourChan[k], heartbeat, terminationChan[k], &wg, enableLog)
 	}
 	wg.Wait()
 }

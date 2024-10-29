@@ -24,7 +24,15 @@ for FILE in "$FOLDER_PATH"/*.json; do
       SOURCE_FILE=$(echo $FILE | cut -d'/' -f 5)
       echo $SOURCE_FILE
       echo "run"
-      go run distributed-k-core.go $FILE > "${SOURCE_FILE}_output_run_${i}.txt" 2>&1
+      if [ "$i" -gt 10 ]; then
+      	start_time=$(date +%s)
+      	go run distributed-k-core.go $FILE disableLog > "${SOURCE_FILE}_output_run_${i}.txt" 2>&1
+      	end_time=$(date +%s)
+      	elapsed_time=$(($end_time - $start_time))
+      	echo "The ${SOURCE_FILE}_output_run_${i}.txt took $elapsed_time seconds to complete." >> all_time.log
+      else
+	go run distributed-k-core.go $FILE enableLog > "${SOURCE_FILE}_output_run_${i}.txt" 2>&1
+      fi
     done
   fi
 done
