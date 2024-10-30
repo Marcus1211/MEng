@@ -42,4 +42,3 @@ plt.yscale('log')
 # Displaying the plot
 plt.legend(['CA', 'A0505'])  # Add legend for each line
 plt.savefig("core_number_distribution.svg", format="svg")
-plt.show()

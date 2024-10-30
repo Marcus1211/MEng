@@ -67,4 +67,3 @@ for n in range(len(file_names)):
     plt.ylabel('Number of Active Nodes', fontsize=16)
     plt.title(f"{categories[n]}", fontsize=16)
     plt.savefig(f"{file_names[n]}_node_over_time.svg", format="svg")
-    plt.show() 

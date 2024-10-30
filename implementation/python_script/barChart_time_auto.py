@@ -50,4 +50,3 @@ plt.xlabel('Graphs', fontsize=16)
 #plt.title('Total Running Time', fontsize=16)
 # Displaying the chart
 plt.savefig("total_time_confidence.svg", format="svg")
-plt.show()

@@ -67,4 +67,3 @@ for n in range(len(file_names)):
     plt.ylabel('Number of Messages Passed', fontsize=16)
     plt.title(f"{categories[n]}", fontsize=16)
     plt.savefig(f"{file_names[n]}_message_over_time.svg", format="svg")
-    plt.show() 

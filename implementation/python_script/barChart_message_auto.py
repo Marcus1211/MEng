@@ -39,4 +39,4 @@ plt.xlabel('Graphs', fontsize=16)
 #plt.yscale('log')
 # Displaying the chart
 plt.savefig("total_msg.svg", format="svg")
-plt.show()
+
