@@ -3,20 +3,9 @@ import re
 import numpy as np
 from scipy import stats
 
-# Data for the bar chart
-#categories = ['PTBR','FC','EEN','MGF','G31','S0811','EEU', 'WS','CA','A0505','WG']
-#values = [34,78,55,95,15,221,337,376,24,572,935]
-#confidence_intervals = [3,8,5,9,1,22,28,31,2,40,77]
-#vertices = [1912,4039,36692,37700,62586,77357,265214,281903,334863,410236,875713]
-#custom_ticks = [0, 10000, 100000, 1000000, 10000000, 20000000, 50000000, 100000000, 500000000]
-
-
-
-
-
-categories = ['CA','A0505']
-file_names = ["com-amazon.ungraph.txt.json", "amazon0505.txt.json"]
-vertices = [334863,410236]
+categories = ['PTBR','FC','EEN','MGF','G31','S0811','EEU', 'WS','CA','A0505','WG','SPR', 'CLJ', 'LJ1']
+file_names = ["musae_PTBR_features.json", "facebook_combined.txt.json", "email-Enron.txt.json", "musae_git_features.json", "p2p-Gnutella31.txt.json","soc-Slashdot0811.txt.json","email-EuAll.txt.json","web-Stanford.txt.json", "com-amazon.ungraph.txt.json", "amazon0505.txt.json","web-Google.txt.json", "soc-pokec-relationships.txt.json", "com-lj.ungraph.txt.json", "com-lj.ungraph.txt.json"]
+vertices = [1912,4039,36692,37700,62586,77357,265214,281903,334863,410236,875713,1632803,3997962,4847571]
 total_msg = []
 for n in file_names:
     msg = []
