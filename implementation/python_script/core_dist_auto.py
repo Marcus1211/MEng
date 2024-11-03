@@ -3,7 +3,7 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 
 categories = ['PTBR','FC','EEN','MGF','G31','S0811','EEU', 'WS','CA','A0505','WG','SPR', 'CLJ', 'LJ1']
-file_names = ["musae_PTBR_features.json", "facebook_combined.txt.json", "email-Enron.txt.json", "musae_git_features.json", "p2p-Gnutella31.txt.json","soc-Slashdot0811.txt.json","email-EuAll.txt.json","web-Stanford.txt.json", "com-amazon.ungraph.txt.json", "amazon0505.txt.json","web-Google.txt.json", "soc-pokec-relationships.txt.json", "com-lj.ungraph.txt.json", "com-lj.ungraph.txt.json"]
+file_names = ["musae_PTBR_features.json", "facebook_combined.txt.json", "email-Enron.txt.json", "musae_git_features.json", "p2p-Gnutella31.txt.json","soc-Slashdot0811.txt.json","email-EuAll.txt.json","web-Stanford.txt.json", "com-amazon.ungraph.txt.json", "amazon0505.txt.json","web-Google.txt.json", "soc-pokec-relationships.txt.json", "com-lj.ungraph.txt.json", "soc-LiveJournal1.txt.json"]
 
 data = []
 for n in file_names:
@@ -40,5 +40,5 @@ plt.xlabel('Core Numbers', fontsize=16)
 plt.ylabel('Number of Vertices', fontsize=16)
 plt.yscale('log')
 # Displaying the plot
-plt.legend(['CA', 'A0505'])  # Add legend for each line
+plt.legend([categories)  # Add legend for each line
 plt.savefig("core_number_distribution.svg", format="svg")
