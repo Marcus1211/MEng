@@ -11,6 +11,8 @@ This go program only takes `json` formatted graph data as input. Only one graph 
 ### - run.sh
 This shell script automatically runs the `distributed-k-core.go` with each data graph as input.
 It loops through all processed graph data. For each graph data, this script executes the simulation 20 times in order to obtain sufficient results.
+### - python_script
+This folder contains all scripts to automatically generate diagrams for this experiment. Follow the README instructions inside the folder after previous steps are completed.
 
 ## How to use this repository
 1. Navigate to the same directory where the `run.sh` is. Execute following command
@@ -19,5 +21,5 @@ It loops through all processed graph data. For each graph data, this script exec
     ```
 2. The results of each simulation will be saved into different log files for future analysis.
 
-
+3. Run the generate_diagrams.sh script inside the python_script folder to genreate all diagrams.
 
