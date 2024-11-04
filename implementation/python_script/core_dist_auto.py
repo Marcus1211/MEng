@@ -40,5 +40,5 @@ plt.xlabel('Core Numbers', fontsize=16)
 plt.ylabel('Number of Vertices', fontsize=16)
 plt.yscale('log')
 # Displaying the plot
-plt.legend([categories)  # Add legend for each line
+plt.legend(categories)  # Add legend for each line
 plt.savefig("core_number_distribution.svg", format="svg")
