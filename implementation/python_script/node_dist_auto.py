@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 import numpy as np 
 
 
-categories = ['CA','A0505']
-file_names = ["com-amazon.ungraph.txt.json", "amazon0505.txt.json"]
+categories = ['PTBR','FC','EEN','MGF','G31','S0811','EEU', 'WS','CA','A0505','WG','SPR', 'CLJ', 'LJ1']
+file_names = ["musae_PTBR_features.json", "facebook_combined.txt.json", "email-Enron.txt.json", "musae_git_features.json", "p2p-Gnutella31.txt.json","soc-Slashdot0811.txt.json","email-EuAll.txt.json","web-Stanford.txt.json", "com-amazon.ungraph.txt.json", "amazon0505.txt.json","web-Google.txt.json", "soc-pokec-relationships.txt.json", "com-lj.ungraph.txt.json", "soc-LiveJournal1.txt.json"]
+vertices = [1912,4039,36692,37700,62586,77357,265214,281903,334863,410236,875713,1632803,3997962,4847571]
 
 for n in range(len(file_names)):
     final_time = [0,0,0,0,0,0,0,0,0]

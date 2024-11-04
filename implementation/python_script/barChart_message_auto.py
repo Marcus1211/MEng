@@ -36,7 +36,7 @@ ax2.set_ylabel('Number of Vertices', color='red', fontsize=16)
 # Adding labels and title
 plt.xlabel('Graphs', fontsize=16)
 #plt.ylabel('Messages', fontsize=16)
-#plt.yscale('log')
+plt.yscale('log')
 # Displaying the chart
 plt.savefig("total_msg.svg", format="svg")
 
