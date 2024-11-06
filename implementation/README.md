@@ -23,3 +23,10 @@ This folder contains all scripts to automatically generate diagrams for this exp
 
 3. Run the generate_diagrams.sh script inside the python_script folder to genreate all diagrams.
 
+## Note
+By default, the distributed-k-core.go should use all computing cores available. The program prints out the number of cores used.
+In case of different local environment setups, Go may only use single computing core. 
+Following code can be added to the main function to specify how many cores to use.
+```go
+runtime.GOMAXPROCS(runtime.NumCPU())
+```
