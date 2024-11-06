@@ -8,7 +8,7 @@ file_names = ["musae_PTBR_features.json", "facebook_combined.txt.json", "email-E
 data = []
 for n in file_names:
     core_count = defaultdict(int)
-    filename = f'../{n}_output_run_1.txt'
+    filename = f'../{n}_output_run_1_logEnabled.txt'
     pattern = re.compile(r"final core number of\s+(\d+)")
     with open(filename, "r") as file:
         for line in file:

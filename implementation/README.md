@@ -17,11 +17,30 @@ This folder contains all scripts to automatically generate diagrams for this exp
 ## How to use this repository
 1. Navigate to the same directory where the `run.sh` is. Execute following command
     ```shell
-    ./run.sh
+    ./run.sh -enableLog 10 -disableLog 10
     ```
+   The helper of the `run.sh` has more information of how to run it
+
+   ```shell
+   ./run.sh -h
+   Usage: ./run.sh [options]
+
+   Options:
+     -enableLog   Specify how many runs with log enabled
+     -disableLog  Specify how many runs with log disabled
+     -h, --help           Show this help message and exit.
+
+   Example:
+     ./run.sh -enableLog 10 -disableLog 10
+   ```
 2. The results of each simulation will be saved into different log files for future analysis.
 
-3. Run the generate_diagrams.sh script inside the python_script folder to genreate all diagrams.
+3. The `run.sh` will also triggers the `generate_diagrams.sh` script inside the python_script folder to genreate all diagrams. In case you need to run `generate_diagrams.sh` manually
+    ```shell
+    ./generate_diagrams.sh -enableLog 10 -disableLog 10
+    ```
+   The numbers of `enabledLog` and `disableLog` options should match with the input for `run.sh`
+
 
 ## Note
 By default, the distributed-k-core.go should use all computing cores available. The program prints out the number of cores used.

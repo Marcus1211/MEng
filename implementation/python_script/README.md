@@ -29,6 +29,7 @@ There is no need to manually execute individual python script.
 ## How to use this folder
 1. Navigate to the same directory where the `generate_diagrams.sh` is. Execute following command
     ```shell
-    ./generate_diagrams.sh
+    ./generate_diagrams.sh -enableLog 10 -disableLog 10
     ```
+   The option value of `enableLog` and `disableLog` should be the same as value used for running `run.sh`
 2. The results of each python script will be saved as `svg` image files.

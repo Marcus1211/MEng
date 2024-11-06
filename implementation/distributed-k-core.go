@@ -93,7 +93,7 @@ func watchdog(heartbeat chan bool, terminationChan map[string]chan bool) {
 		case <-heartbeat:
 			done = false
 		//termination happens when no heartbeat receives in the past 300 seconds
-		case <-time.After(30 * time.Second):
+		case <-time.After(300 * time.Second):
 			fmt.Println("No heartbeat has received in the past 300 seconds, start terminating all nodes")
 			for _, c := range terminationChan {
 				c <- true
@@ -146,6 +146,7 @@ func dataCleanse2(data map[string][]int) map[string][]int {
 }
 
 func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
         fmt.Printf("GOMAXPROCS is %d\n", runtime.GOMAXPROCS(0))
 	filename := os.Args[1]
 	fileContent, err := os.Open(filename)

@@ -1,19 +1,26 @@
 from datetime import datetime
 import re
 import matplotlib.pyplot as plt
-import numpy as np 
+import numpy as np
+import sys
 
 
-categories = ['PTBR','FC','EEN','MGF','G31','S0811','EEU', 'WS','CA','A0505','WG','SPR', 'CLJ', 'LJ1']
-file_names = ["musae_PTBR_features.json", "facebook_combined.txt.json", "email-Enron.txt.json", "musae_git_features.json", "p2p-Gnutella31.txt.json","soc-Slashdot0811.txt.json","email-EuAll.txt.json","web-Stanford.txt.json", "com-amazon.ungraph.txt.json", "amazon0505.txt.json","web-Google.txt.json", "soc-pokec-relationships.txt.json", "com-lj.ungraph.txt.json", "soc-LiveJournal1.txt.json"]
-vertices = [1912,4039,36692,37700,62586,77357,265214,281903,334863,410236,875713,1632803,3997962,4847571]
+#categories = ['PTBR','FC','EEN','MGF','G31','S0811','EEU', 'WS','CA','A0505','WG','SPR', 'CLJ', 'LJ1']
+#file_names = ["musae_PTBR_features.json", "facebook_combined.txt.json", "email-Enron.txt.json", "musae_git_features.json", "p2p-Gnutella31.txt.json","soc-Slashdot0811.txt.json","email-EuAll.txt.json","web-Stanford.txt.json", "com-amazon.ungraph.txt.json", "amazon0505.txt.json","web-Google.txt.json", "soc-pokec-relationships.txt.json", "com-lj.ungraph.txt.json", "soc-LiveJournal1.txt.json"]
+#vertices = [1912,4039,36692,37700,62586,77357,265214,281903,334863,410236,875713,1632803,3997962,4847571]
 
+
+categories = ['CA','A0505']
+file_names = ["com-amazon.ungraph.txt.json", "amazon0505.txt.json"]
+vertices = [281903,334863]
+
+runs = sys.argv[1]
 for n in range(len(file_names)):
     final_time = [0,0,0,0,0,0,0,0,0]
-    for i in range(1, 11):
+    for i in range(1, int(runs) + 1):
         msg = []
         temp_count = 0
-        filename = f'../{file_names[n]}_output_run_{i}.txt'
+        filename = f'../{file_names[n]}_output_run_{i}_logEnabled.txt'
         pattern = re.compile(r"\bNode\s+\d+\s+sent\s+(\d+)\s+messages\b")
         #pattern = re.compile(r"\b(.*)\.(\d+) Node\s+\d+\s+sent\s+(\d+)\s+messages\b")
         with open(filename, "r") as file:
