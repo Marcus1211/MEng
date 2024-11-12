@@ -33,6 +33,11 @@ This folder contains all scripts to automatically generate diagrams for this exp
    Example:
      ./run.sh -enableLog 10 -disableLog 10
    ```
+   The logs output will affect the overall runtime of the algorithm, that's why to have separate runs with log enabled and disabled
+   The runs with `-enableLog` is to track the overall runtime
+   The runs with `-disableLog` is to track the overall status of the system, e.g. what's the status of each node
+   It's recommend to have 10 runs of each, the experiment in the report is based on 10 runs of each
+
 2. The results of each simulation will be saved into different log files for future analysis.
 
 3. The `run.sh` will also triggers the `generate_diagrams.sh` script inside the python_script folder to genreate all diagrams. In case you need to run `generate_diagrams.sh` manually
